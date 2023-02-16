@@ -1,0 +1,16 @@
+{
+  "name": "readingtemp",
+  "version": "1.0.0",
+  "description": "Charts out of temperature data stored in CSV Files",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "aem",
+  "license": "ISC",
+  "dependencies": {
+    "csv-parse": "^5.3.5",
+    "express": "^4.18.2",
+    "ftp": "^0.3.10"
+  }
+}
