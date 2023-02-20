@@ -33,12 +33,26 @@ client.on('ready', () => {
 
 client.on('error', (err) => {
     console.error(`Could not connect to server with address: ${config.host} !`);
-    console.error(err.message);
-    process.exit(1);
+    console.log('Trying to read current directory for CSV files..');
+    try {
+        readTemp();
+    } catch (err) {
+        console.error(err.message);
+        process.exit(1);
+    }
 })
 
 client.on('end', () => {
     // Read CSV Files and host server
+    try {
+        readTemp();
+    } catch (err) {
+        console.error(err.message);
+        process.exit(1);
+    }
+});
+
+function readTemp() {
     fs.readdir(__dirname, (err, files) => {
         if (err) { return console.error(err.message); }
         let csvFiles = [];
@@ -57,26 +71,39 @@ client.on('end', () => {
             let record;
             while ((record = parser.read()) !== null) {
                 if (record.Zone.indexOf('<EOL>') > -1) continue;
-                
+
+                // Format zone name
                 let name = record.Zone
                     .slice(0, record.Zone.indexOf('('))
                     .trimEnd()
                     .replaceAll(' ', '_');
-                // '[14-02-23].05:59:39'
+
+                // Format timestamp to Date object format
                 let timestamp = record.Timestamp
                     .replaceAll('[', '')
                     .replaceAll(']', '')
                     .replaceAll('.', ' ');
-                timestamp = `${timestamp.split(':')[0]}:${timestamp.split(':')[1]}`;
+                let parts = timestamp.split('-');
+                let time = parts[2].split(' ')[1];
+                time = time.slice(0, time.indexOf(':', 5));
+                timestamp = `20${parts[2].split(' ')[0]}-${parts[1]}-${parts[0]}T${time}:00Z`;
+                timestamp = new Date(timestamp);
+                
                 if (name in tempRecords === false) {
-                    tempRecords[name] = []
-                } else {
-                    tempRecords[name].push({ 
-                        Timestamp: record.Timestamp,//new Date.parse(timestamp),
-                        RealTemp: parseFloat(record.RealTemp),
-                        Setpoint: parseFloat(record.Setpoint)
-                    });
+                    tempRecords[name] = {}
                 }
+                
+                // Sort by days
+                let day = timestamp.toLocaleDateString('fr-FR', { weekday: 'long' });
+                if (day in tempRecords[name] === false) {
+                    tempRecords[name][day] = []
+                }
+
+                tempRecords[name][day].push({ 
+                    Timestamp: timestamp.toLocaleTimeString(),
+                    RealTemp: parseFloat(record.RealTemp),
+                    Setpoint: parseFloat(record.Setpoint)
+                });
             }
         });
 
@@ -85,9 +112,9 @@ client.on('end', () => {
         });
         
         parser.on('end', () => {
-            console.log(tempRecords);
-
-            app.use(express.static('src'))
+            console.log(tempRecords.Cuisine);
+            
+            app.use(express.static('src'));
         
             router.get('/', (req, res) => {
                 res.sendFile(path.join(__dirname, 'src', 'index.html'));
@@ -106,7 +133,7 @@ client.on('end', () => {
             fs.createReadStream(file).pipe(parser);
         });
     });
-});
+}
 
 // Connect to FTP server
 client.connect(config);
