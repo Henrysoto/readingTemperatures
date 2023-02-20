@@ -2,17 +2,15 @@ window.addEventListener('DOMContentLoaded', () => {
   (async function() {
       let res = await fetch('api/data');
       if (res.status == 200) {
+        // Get JSON data from express
         let data = await res.text();
         let jj = JSON.parse(data);
         let tempDatasets = {};
+
+        // Main div elem
         const div = document.getElementById("charts");
         
-        // console.log(Object.keys(jj)[0]);
-        console.log(jj);
-        // console.log(jj[Object.keys(jj)[0]].Timestamp);
-        // console.log(jj[Object.keys(jj)[0]].RealTemp);
-        // console.log(jj[Object.keys(jj)[0]].Setpoint);
-
+        // Generate random RGB colors for drawing lines
         var dynamicColors = function() {
           var r = Math.floor(Math.random() * 255);
           var g = Math.floor(Math.random() * 255);
@@ -53,6 +51,7 @@ window.addEventListener('DOMContentLoaded', () => {
         weekdays[5] = "samedi";
         weekdays[6] = "dimanche";
 
+        // Append chart per days
         for (let i = 0; i < dayCount; i++) {
           // Create canvas elem
           const jour = document.createElement('p');
@@ -65,39 +64,23 @@ window.addEventListener('DOMContentLoaded', () => {
           div.appendChild(canvas);
         }
         
+        // Fill temperatures data into each zone per days
         Object.keys(jj).forEach(zone => {
           Object.keys(jj[zone]).forEach(days => {
-            // for (let i = 0; i < dayCount; i++) {
             for (let heure of jj[zone][days]) {
               tempDatasets[zone][days].data.push(heure.RealTemp);
             } 
-            // }
           });
         });
 
-        // console.log(tempDatasets);
-
-        // for (let i = 0; i < Object.keys(jj).length; i++) {
-        //   // Fill data array
-        //   jj[Object.keys(jj)[i]].forEach(days => {
-        //     tempDatasets[i].data.push(index.RealTemp);
-        //   });
-        // }
-
-        // jj[Object.keys(jj)[0]].forEach(index => {
-          
-        //   timestamps.push(jj[0][index].Timestamp);
-        // });
-
+        // Get timestamp (same for each day)
         for (let day of jj.Cuisine.dimanche) {
           timestamps.push(day.Timestamp);
         };
-        
-        // console.log(tempDatasets);
 
         let finalDatasets = {};
 
-        // Create new chart.js elements for each day
+        // Fill chart datasets
         Object.keys(tempDatasets).forEach(zone => {
           Object.keys(tempDatasets[zone]).forEach(days => {
             if (days in finalDatasets === false) {
@@ -106,9 +89,8 @@ window.addEventListener('DOMContentLoaded', () => {
             finalDatasets[days].push(tempDatasets[zone][days]);
           });
         });
-
-        console.log(finalDatasets);
         
+        // Execute chart.js on each chart
         for (let i = 0; i < dayCount; i++) {
           new Chart(
             document.getElementById(weekdays[i]),
