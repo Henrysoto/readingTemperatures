@@ -17,11 +17,11 @@ const config = {
 client = new ftpClient();
 client.on('ready', () => {
     client.list((err, list) => {
-        if (err) console.error(err.message);
+        if (err) { throw err; }
         list.forEach(obj => {
             if (obj.name.indexOf('.csv') > -1) {
                 client.get(obj.name, (err, stream) => {
-                    if (err) console.error(err.message);
+                    if (err) { throw err; }
                     stream.once('close', () => { client.end(); });
                     stream.pipe(fs.createWriteStream(obj.name));
                 });
@@ -30,6 +30,12 @@ client.on('ready', () => {
         client.end();
     });
 });
+
+client.on('error', (err) => {
+    console.error(`Could not connect to server with address: ${config.host} !`);
+    console.error(err.message);
+    process.exit(1);
+})
 
 client.on('end', () => {
     // Read CSV Files and host server
@@ -56,11 +62,17 @@ client.on('end', () => {
                     .slice(0, record.Zone.indexOf('('))
                     .trimEnd()
                     .replaceAll(' ', '_');
+                // '[14-02-23].05:59:39'
+                let timestamp = record.Timestamp
+                    .replaceAll('[', '')
+                    .replaceAll(']', '')
+                    .replaceAll('.', ' ');
+                timestamp = `${timestamp.split(':')[0]}:${timestamp.split(':')[1]}`;
                 if (name in tempRecords === false) {
                     tempRecords[name] = []
                 } else {
                     tempRecords[name].push({ 
-                        Timestamp: record.Timestamp,
+                        Timestamp: record.Timestamp,//new Date.parse(timestamp),
                         RealTemp: parseFloat(record.RealTemp),
                         Setpoint: parseFloat(record.Setpoint)
                     });
@@ -87,6 +99,7 @@ client.on('end', () => {
 
             app.use('/', router);
             app.listen(process.env.port || 8001);
+            console.log(`Server listening: http://localhost:8001`);
         });
 
         csvFiles.forEach(file => {
@@ -95,5 +108,5 @@ client.on('end', () => {
     });
 });
 
-// Connect to FTP
+// Connect to FTP server
 client.connect(config);
