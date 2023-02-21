@@ -7,10 +7,10 @@ const path = require('path');
 const ftpClient = require('ftp');
 
 const config = {
-    host: '192.168.5.21',
-    port: 21,
-    user: 'administrator',
-    password: 'password'
+    host: process.env.APP_SERVER_FTP,
+    port: process.env.APP_SERVER_FTP_PORT,
+    user: process.env.APP_SERVER_USER,
+    password: process.env.APP_SERVER_PW
 }
 
 // Retrieve CSV files from AMX FTP server
