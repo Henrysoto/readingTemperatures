@@ -11,10 +11,6 @@ const config = {
     port: process.env.APP_SERVER_FTP_PORT,
     user: process.env.APP_SERVER_USER,
     password: process.env.APP_SERVER_PW
-    // host: "otomispalti.homeip.net",
-    // port: 10055,
-    // user: "administrator",
-    // password: "password"
 }
 
 // Retrieve CSV files from AMX FTP server
