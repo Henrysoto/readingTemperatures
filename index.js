@@ -7,7 +7,7 @@ const path = require('path');
 const ftpClient = require('ftp');
 
 const config = {
-    host: process.env.APP_SERVER_FTP,
+    host: "placeholder",
     port: process.env.APP_SERVER_FTP_PORT,
     user: process.env.APP_SERVER_USER,
     password: process.env.APP_SERVER_PW
