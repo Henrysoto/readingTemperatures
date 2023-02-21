@@ -79,7 +79,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
 
         // Get timestamp (same for each day)
-        for (let day of jj.Cuisine.lundi) {
+        for (let day of jj.Cuisine.mardi) {
           timestamps.push(day.Timestamp);
         };
 
