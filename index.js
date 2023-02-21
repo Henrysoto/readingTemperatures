@@ -125,8 +125,8 @@ function readTemp() {
             });
 
             app.use('/', router);
-            app.listen(process.env.port || 8001, '0.0.0.0');
-            console.log(`Server listening: http://localhost:8001`);
+            app.listen(process.env.port, '0.0.0.0');
+            //console.log(`Server listening: http://localhost:8001`);
         });
 
         csvFiles.forEach(file => {
