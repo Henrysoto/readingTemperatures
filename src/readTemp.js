@@ -54,14 +54,19 @@ window.addEventListener('DOMContentLoaded', () => {
         // Append chart per days
         for (let i = 0; i < dayCount; i++) {
           // Create canvas elem
-          const jour = document.createElement('p');
+          const jour = document.createElement('h5');
+          const space = document.createElement('br');
           jour.innerText = `${weekdays[i][0].toUpperCase()}${weekdays[i].slice(1)}`;
+          jour.style.color = "white"
           const canvas = document.createElement('canvas');
           canvas.id = weekdays[i];
           canvas.style.border = "1px solid";
+          canvas.style.borderColor = "white";
+          canvas.style.backgroundColor = "#1B1E24";
           // Append to main div
           div.appendChild(jour);
           div.appendChild(canvas);
+          div.appendChild(space);
         }
         
         // Fill temperatures data into each zone per days
@@ -89,6 +94,23 @@ window.addEventListener('DOMContentLoaded', () => {
             finalDatasets[days].push(tempDatasets[zone][days]);
           });
         });
+
+        // Chart.js custom background
+        // const plugin = {
+        //   id: 'customCanvasBackgroundColor',
+        //   beforeDraw: (chart, args, options) => {
+        //     const {ctx} = chart;
+        //     ctx.save();
+        //     ctx.globalCompositeOperation = 'destination-over';
+        //     ctx.fillStyle = options.color || '#99ffff';
+        //     ctx.fillRect(0, 0, chart.width, chart.height);
+        //     ctx.restore();
+        //   }
+        // };
+
+        Chart.defaults.backgroundColor = '#CCBFAB';
+        Chart.defaults.borderColor = '#CCBFAB';
+        Chart.defaults.color = '#FFF';
         
         // Execute chart.js on each chart
         for (let i = 0; i < dayCount; i++) {
@@ -99,7 +121,7 @@ window.addEventListener('DOMContentLoaded', () => {
               data: {
                 labels: timestamps,
                 datasets: finalDatasets[weekdays[i]]
-              }
+              },
             }
           );
         }

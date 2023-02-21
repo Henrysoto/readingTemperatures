@@ -4,15 +4,42 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="data:,">
+    <link rel="icon" href="assets/favicon-otomis.jpg">
+    <link rel="stylesheet" href="assets/pico.fluid.classless.min.css">
     <script src="assets/chart.umd.js"></script>
-    <title>Chart Temperatures</title>
+    <title>[OTOMIS/Palti] Relevés des températures</title>
+    <style>
+        body {
+            background-color: #22130e;
+        }
+        header {
+            display: flex;
+            
+        }
+        .head {
+            /*display: flex;*/
+            padding-left: 25px;
+        }
+    </style>
 </head>
 <body>
-    <div id="charts" style="width: auto;padding: 30px">
-        
+    <header>
+        <img src="assets/icone-otomis2-150x150.png">
+        <hgroup class="head">
+            <h2>Otomis - Palti</h2>
+            <h4>Relevé des températures</h4>
+            <h5>Période du 20/02/23 au 26/02/23</h5>
+        </hgroup>
+    </header>
+    <hr>
+    <div class="container" id="charts" style="width: auto;padding: 30px">     
     </div>
-
+    <footer>
+        <hgroup>
+            <h5>© Otomis 2023 </h5>
+            <h6><a class="secondary" href="https://www.otomis.com"><small>www.otomis.com</small></a></h6>
+        </hgroup>  
+    </footer>
     <script type="module" src="readTemp.js"></script>
 </body>
 </html>
