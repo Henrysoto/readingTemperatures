@@ -33,6 +33,7 @@ window.addEventListener('DOMContentLoaded', () => {
             tempDatasets[zone][days] = {
               label: rx,
               data: [],
+              setpoints: [],
               fill: false,
               borderColor: colors,
               tension: 0.5
@@ -50,14 +51,59 @@ window.addEventListener('DOMContentLoaded', () => {
         weekdays[4] = "vendredi";
         weekdays[5] = "samedi";
         weekdays[6] = "dimanche";
+        
+        let overallAverage = 0.0;
+        function computeAverage(zone, day) {
+          let tmp = 0;
+          for (let temp of jj[zone][day]) {
+            tmp += temp.RealTemp;
+          }
+          overallAverage += parseFloat(tmp/jj[zone][day].length);
+          return parseFloat(tmp/jj[zone][day].length).toFixed(2);
+        }
 
-        // Append chart per days
+        // Append each days to DOM
         for (let i = 0; i < dayCount; i++) {
-          // Create canvas elem
+          // Create title elem
           const jour = document.createElement('h5');
           const space = document.createElement('br');
           jour.innerText = `${weekdays[i][0].toUpperCase()}${weekdays[i].slice(1)}`;
           jour.style.color = "white"
+          // Create table with average temperatures
+          const detail = document.createElement('details');
+          const summary = document.createElement('summary')
+          summary.innerText = "Températures moyennes";
+          const table = document.createElement('table');
+          table.role = "grid";
+          let iTable = `
+            <thead>
+                <tr>
+                    <th scope="col">Zones</th>
+                    <th scope="col">Températures moyennes</th>
+                </tr>
+            </thead>
+            <tbody>`;
+          
+          Object.keys(jj).forEach(zone => {
+            iTable = `${iTable}
+              <tr>
+                <td>${zone.replaceAll('_', ' ')}</td>
+                <td>${computeAverage(zone, weekdays[i])}</td>
+              </tr>`;
+          });
+          iTable = `${iTable}
+            <tfoot>
+              <tr>
+                <th scope="col">Température Moyenne Totale</td>
+                <th scope="col">${parseFloat(overallAverage/Object.keys(jj).length).toFixed(2)}</td>
+              </tr>
+            </tfoot>`;
+          iTable = `${iTable}</tbody>`;
+          overallAverage = 0.0;
+          table.innerHTML = iTable;
+          detail.appendChild(summary);
+          detail.appendChild(table);
+          // Create canvas elem
           const canvas = document.createElement('canvas');
           canvas.id = weekdays[i];
           canvas.style.border = "1px solid";
@@ -65,6 +111,7 @@ window.addEventListener('DOMContentLoaded', () => {
           canvas.style.backgroundColor = "#1B1E24";
           // Append to main div
           div.appendChild(jour);
+          div.appendChild(detail);
           div.appendChild(canvas);
           div.appendChild(space);
         }
@@ -74,6 +121,7 @@ window.addEventListener('DOMContentLoaded', () => {
           Object.keys(jj[zone]).forEach(days => {
             for (let heure of jj[zone][days]) {
               tempDatasets[zone][days].data.push(heure.RealTemp);
+              tempDatasets[zone][days].setpoints.push(heure.Setpoint);
             } 
           });
         });
@@ -110,6 +158,22 @@ window.addEventListener('DOMContentLoaded', () => {
                 labels: timestamps,
                 datasets: finalDatasets[weekdays[i]]
               },
+              options: {
+                plugins: {
+                  tooltip: {
+                    callbacks: {
+                      label: function (context) {
+                        // Manually add setpoint data into the chart's tooltip
+                        const labels = [
+                          `${context.dataset.label}: ${context.dataset.data[context.dataIndex]}`,
+                          `Consigne: ${context.dataset.setpoints[context.dataIndex]}`
+                        ];
+                        return labels;
+                      }
+                    }
+                  }
+                }
+              }
             }
           );
         }
