@@ -94,7 +94,7 @@ window.addEventListener('DOMContentLoaded', () => {
           iTable = `${iTable}
             <tfoot>
               <tr>
-                <th scope="col">Température Moyenne Totale</td>
+                <th scope="col">Température Moyenne Globale</td>
                 <th scope="col">${parseFloat(overallAverage/Object.keys(jj).length).toFixed(2)}</td>
               </tr>
             </tfoot>`;
