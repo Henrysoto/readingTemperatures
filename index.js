@@ -112,7 +112,7 @@ function readTemp() {
         });
         
         parser.on('end', () => {
-            console.log(tempRecords.Cuisine);
+            //console.log(tempRecords.Cuisine);
             
             app.use(express.static('src'));
         
@@ -130,6 +130,7 @@ function readTemp() {
         });
 
         csvFiles.forEach(file => {
+            console.log(`Creating reading stream for file: ${file}`);
             fs.createReadStream(file).pipe(parser);
         });
     });
