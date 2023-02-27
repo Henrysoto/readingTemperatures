@@ -51,6 +51,15 @@ window.addEventListener('DOMContentLoaded', () => {
         weekdays[4] = "vendredi";
         weekdays[5] = "samedi";
         weekdays[6] = "dimanche";
+
+        let weekdaysNum = [];
+        Object.keys(jj).forEach(zone => {
+          Object.keys(jj[zone]).forEach(dayNum => {
+            if (weekdaysNum.indexOf(dayNum) === -1) {
+              weekdaysNum.push(dayNum);
+            }
+          });
+        });
         
         let overallAverage = 0.0;
         function computeAverage(zone, day) {
@@ -88,7 +97,7 @@ window.addEventListener('DOMContentLoaded', () => {
             iTable = `${iTable}
               <tr>
                 <td>${zone.replaceAll('_', ' ')}</td>
-                <td>${computeAverage(zone, weekdays[i])}</td>
+                <td>${computeAverage(zone, weekdaysNum[i])}</td>
               </tr>`;
           });
           iTable = `${iTable}
@@ -127,7 +136,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
 
         // Get timestamp (same for each day)
-        for (let day of jj.Cuisine.mardi) {
+        for (let day of jj.Cuisine[weekdaysNum[0]]) {
           timestamps.push(day.Timestamp);
         };
 
@@ -156,7 +165,7 @@ window.addEventListener('DOMContentLoaded', () => {
               type: 'line',
               data: {
                 labels: timestamps,
-                datasets: finalDatasets[weekdays[i]]
+                datasets: finalDatasets[weekdaysNum[i]]
               },
               options: {
                 plugins: {

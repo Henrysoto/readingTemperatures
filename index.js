@@ -103,7 +103,7 @@ function readTemp() {
                 }
                 
                 // Sort by days
-                let day = timestamp.toLocaleDateString('fr-FR', { timeZone: 'Europe/Paris', weekday: 'long' });
+                let day = timestamp.toLocaleDateString('fr-FR', { timeZone: 'Europe/Paris', day: 'numeric' });
                 if (day in tempRecords[name] === false) {
                     tempRecords[name][day] = []
                 }
@@ -121,6 +121,17 @@ function readTemp() {
         });
         
         parser.on('end', () => {
+            
+            
+
+            // temp fix for azure
+            Object.keys(tempRecords).forEach(zone => {
+                Object.fromEntries(
+                    Object.entries(tempRecords[zone]).sort()
+                );
+            })
+            
+
             app.use(express.static('src'));
         
             router.get('/', (req, res) => {
