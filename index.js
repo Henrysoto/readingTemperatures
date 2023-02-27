@@ -122,8 +122,6 @@ function readTemp() {
         
         parser.on('end', () => {
             
-            
-
             // temp fix for azure
             Object.keys(tempRecords).forEach(zone => {
                 Object.fromEntries(
@@ -131,7 +129,6 @@ function readTemp() {
                 );
             })
             
-
             app.use(express.static('src'));
         
             router.get('/', (req, res) => {

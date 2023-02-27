@@ -1,3 +1,4 @@
+"use strict";
 window.addEventListener('DOMContentLoaded', () => {
   (async function() {
       let res = await fetch('api/data');
