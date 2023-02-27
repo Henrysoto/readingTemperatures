@@ -88,13 +88,14 @@ function readTemp() {
                     .replaceAll('.', ' ');
                 let parts = timestamp.split('-');
                 let time = parts[2].split(' ')[1];
+                time = time.split(':');
                 timestamp = new Date(
                     `20${parts[2].split(' ')[0]}`,
                     parts[1],
                     parts[0],
-                    time.split(':')[0],
-                    time.split(':')[1],
-                    time.split(':')[2]
+                    time[0],
+                    time[1],
+                    time[2]
                 );
 
                 if (name in tempRecords === false) {
