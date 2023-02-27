@@ -87,7 +87,7 @@ function readTemp() {
                 let time = parts[2].split(' ')[1];
                 time = time.slice(0, time.indexOf(':', 5));
                 timestamp = `20${parts[2].split(' ')[0]}-${parts[1]}-${parts[0]}T${time}:00Z`;
-                timestamp = new Date(timestamp);
+                timestamp = new Date(timestamp).toLocaleString("fr-FR", {timeZone: "Europe/Paris"});
                 
                 if (name in tempRecords === false) {
                     tempRecords[name] = {}
