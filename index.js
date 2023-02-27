@@ -58,10 +58,13 @@ function readTemp() {
         let csvFiles = [];
         files.forEach(file => {
             if (path.extname(file) == ".csv") {
-                csvFiles.push(file);
+                if (file in csvFiles === false) {
+                    csvFiles.push(file);
+                }
             }
         });
 
+        csvFiles.sort();
         let tempRecords = {};
         const parser = parse({
             columns: ['Timestamp', 'Zone', 'Setpoint', 'RealTemp']
@@ -87,14 +90,14 @@ function readTemp() {
                 let time = parts[2].split(' ')[1];
                 time = time.slice(0, time.indexOf(':', 5));
                 timestamp = `20${parts[2].split(' ')[0]}-${parts[1]}-${parts[0]}T${time}:00Z`;
-                timestamp = new Date(timestamp).toLocaleString("fr-FR", {timeZone: "Europe/Paris"});
-                
+                timestamp = new Date(timestamp);
+
                 if (name in tempRecords === false) {
                     tempRecords[name] = {}
                 }
                 
                 // Sort by days
-                let day = timestamp.toLocaleDateString('fr-FR', { weekday: 'long' });
+                let day = timestamp.toLocaleDateString('fr-FR', { timeZone: 'Europe/Paris', weekday: 'long' });
                 if (day in tempRecords[name] === false) {
                     tempRecords[name][day] = []
                 }
