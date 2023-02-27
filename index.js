@@ -103,7 +103,7 @@ function readTemp() {
                 }
 
                 tempRecords[name][day].push({ 
-                    Timestamp: timestamp.toLocaleTimeString(),
+                    Timestamp: timestamp.toLocaleString('fr-FR', { timeZone: 'Europe/Paris' }),
                     RealTemp: parseFloat(record.RealTemp),
                     Setpoint: parseFloat(record.Setpoint)
                 });
