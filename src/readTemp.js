@@ -1,5 +1,7 @@
 "use strict";
 
+let weekdays = []; // aws fix ?
+
 async function give_me_my_chart() {
   let res = await fetch('api/data');
   if (res.status == 200) {
@@ -44,7 +46,7 @@ async function give_me_my_chart() {
     });
     
     dayCount = parseInt(dayCount/Object.keys(tempDatasets).length);
-    var weekdays = [];
+    //let weekdays = [];
     weekdays[0] = "lundi";
     weekdays[1] = "mardi";
     weekdays[2] = "mercredi";
