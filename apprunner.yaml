@@ -1,8 +1,12 @@
 version: 1.0
-runtime: nodejs18
+runtime: nodejs16
 build:
   commands:    
     build:
       - npm install --production                                  
-run:                              
+run:
+  runtime-version: 16.19.0                             
   command: node index.js
+  network:
+    port: 80
+    env: PORT
