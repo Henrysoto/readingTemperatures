@@ -88,9 +88,14 @@ function readTemp() {
                     .replaceAll('.', ' ');
                 let parts = timestamp.split('-');
                 let time = parts[2].split(' ')[1];
-                time = time.slice(0, time.indexOf(':', 5));
-                timestamp = `20${parts[2].split(' ')[0]}-${parts[1]}-${parts[0]}T${time}:00Z`;
-                timestamp = new Date(timestamp);
+                timestamp = new Date(
+                    `20${parts[2].split(' ')[0]}`,
+                    parts[1],
+                    parts[0],
+                    time.split(':')[0],
+                    time.split(':')[1],
+                    time.split(':')[2]
+                );
 
                 if (name in tempRecords === false) {
                     tempRecords[name] = {}
@@ -103,7 +108,7 @@ function readTemp() {
                 }
 
                 tempRecords[name][day].push({ 
-                    Timestamp: timestamp.toLocaleString('fr-FR', { timeZone: 'Europe/Paris' }),
+                    Timestamp: timestamp.toLocaleTimeString('fr-FR', { timeZone: 'Europe/Paris' }),
                     RealTemp: parseFloat(record.RealTemp),
                     Setpoint: parseFloat(record.Setpoint)
                 });
@@ -115,8 +120,6 @@ function readTemp() {
         });
         
         parser.on('end', () => {
-            //console.log(tempRecords.Cuisine);
-            
             app.use(express.static('src'));
         
             router.get('/', (req, res) => {
