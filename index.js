@@ -131,12 +131,44 @@ function readTemp() {
             
             app.use(express.static('src'));
         
-            router.get('/', (req, res) => {
-                res.sendFile(path.join(__dirname, 'src', 'index.html'));
+            router.get('/', async function(req, res, next) {
+                try {
+                    res.sendFile(path.join(__dirname, 'src', 'index.html'));
+                } catch(err) {
+                    console.error(`Error retrieving index: ${err.message}`);
+                    next(err);
+                }
             });
 
-            router.get('/api/data', (req, res) => {
-                res.json(tempRecords);
+            router.get('/api/data', async function(req, res, next) {
+                try {
+                    res.json(tempRecords);
+                } catch(err) {
+                    console.error(`Error retrieving data: ${err.message}`);
+                    next(err);
+                }
+            });
+
+            router.get('/api/data/zones', async function(req, res, next) {
+                try {
+                    let zones = [];
+                    Object.keys(tempRecords).forEach(zone => {
+                        zones.push(zone.replaceAll('_', ' '));
+                    });
+                    res.json(zones);
+                } catch(err) {
+                    console.error(`Error retrieving zones data: ${err.message}`);
+                    next(err);
+                }
+            });
+
+            router.get('/api/data/:zone', async function(req, res, next) {
+                try {
+                    res.json(tempRecords[req.params.zone]);
+                } catch(err) {
+                    console.error(`Error retrieving zone: ${req.params.zone} ${err.message}`);
+                    next(err);
+                }
             });
 
             app.use('/', router);
