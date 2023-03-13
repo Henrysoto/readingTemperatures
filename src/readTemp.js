@@ -8,6 +8,8 @@ var dynamicColors = function() {
   return "rgb(" + r + "," + g + "," + b + ")";
 };
 
+
+// Clear div elements when switching zones
 function removeChildrens(elem) {
   while (elem.firstChild) {
     elem.removeChild(elem.firstChild);
@@ -19,6 +21,7 @@ Chart.defaults.backgroundColor = '#CCBFAB';
 Chart.defaults.borderColor = '#CCBFAB';
 Chart.defaults.color = '#FFF';
 
+// Show all zones
 async function give_me_my_charts() {
   
   let res = await fetch('api/data');
@@ -197,6 +200,7 @@ async function give_me_my_charts() {
   }
 }
 
+// Show chart per zone only
 async function chart_per_zone(zone) {
   if (zone === 'all' || zone === '') {
     give_me_my_charts();
@@ -297,6 +301,7 @@ async function chart_per_zone(zone) {
   }
 }
 
+// Setup options in select element
 async function prepare_select_options() {
    // Select options
   let res = await fetch('api/data/zones');
