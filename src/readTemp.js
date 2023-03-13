@@ -332,5 +332,4 @@ async function prepare_select_options() {
 
 window.addEventListener('DOMContentLoaded', () => {
   prepare_select_options();
-  // give_me_my_charts();
 });
