@@ -132,3 +132,4 @@ dist
 # personnal
 src/individuel
 .old_csv
+readTemp.js
